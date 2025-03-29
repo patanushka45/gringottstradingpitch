@@ -21,12 +21,21 @@ export default function StockDetail({ symbol }: { symbol: string }) {
 
   const quote = quoteData?.["Global Quote"];
   
-  if (!quote) {
+  if (!quote || quoteData?.Information) {
     return (
-      <Card className="border border-neutral-200 mb-6">
+      <Card className="card mb-6">
         <CardContent className="p-5">
           <div className="text-center p-4">
-            <p className="text-neutral-600">Could not load stock data for {symbol}</p>
+            {quoteData && quoteData.Information ? (
+              <div>
+                <h3 className="text-amber-200 text-lg mb-2">Demo API Key in Use</h3>
+                <p className="text-amber-300/60 text-sm italic mb-3">{quoteData.Information}</p>
+                <p className="text-amber-300/70 mb-1">Unable to load stock data for <span className="font-semibold">{symbol}</span></p>
+                <p className="text-amber-300/70 mt-4">Get a free API key from <a href="https://www.alphavantage.co/support/#api-key" target="_blank" rel="noopener" className="underline text-amber-400 hover:text-amber-300">Alpha Vantage</a></p>
+              </div>
+            ) : (
+              <p className="text-amber-300/70">Could not load stock data for {symbol}</p>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -51,24 +60,24 @@ export default function StockDetail({ symbol }: { symbol: string }) {
   const yearLow = low;
 
   return (
-    <Card className="border border-neutral-200 mb-6">
+    <Card className="card mb-6">
       <CardContent className="p-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
           <div className="flex items-center mb-2 sm:mb-0">
             <div className="mr-3">
-              <div className="text-xl font-semibold">{symbol}</div>
-              <div className="text-sm text-neutral-600">
+              <div className="text-xl font-semibold text-amber-200">{symbol}</div>
+              <div className="text-sm text-amber-300/70">
                 {/* Alpha Vantage doesn't provide company name in quote data */}
                 {/* In a real app, you'd fetch this from a company profile API */}
-                {symbol}
+                {symbol} Wizarding Shares
               </div>
             </div>
-            <div className="bg-neutral-100 text-neutral-700 text-xs py-1 px-2 rounded">NYSE</div>
+            <div className="bg-amber-900/30 text-amber-200 text-xs py-1 px-2 rounded border border-amber-700/30">GRIN</div>
           </div>
           
           <div className="flex items-baseline">
-            <span className="text-xl font-semibold mr-2">{formatCurrency(price)}</span>
-            <span className={isPositive ? "text-green-600 text-sm" : "text-red-600 text-sm"}>
+            <span className="text-xl font-semibold mr-2 text-amber-100">{formatCurrency(price)}</span>
+            <span className={isPositive ? "text-green-400 text-sm" : "text-red-400 text-sm"}>
               {formatCurrency(change)} ({formatPercent(changePercent)})
             </span>
           </div>
@@ -82,7 +91,9 @@ export default function StockDetail({ symbol }: { symbol: string }) {
                 variant={timeframe === tf ? "default" : "outline"}
                 size="sm"
                 onClick={() => setTimeframe(tf)}
-                className={timeframe === tf ? "bg-primary text-white" : "bg-neutral-100 text-neutral-700"}
+                className={timeframe === tf 
+                  ? "bg-amber-700 hover:bg-amber-800 text-amber-100 border-amber-600" 
+                  : "bg-amber-900/20 hover:bg-amber-900/30 text-amber-300 border-amber-700/30"}
               >
                 {tf}
               </Button>
@@ -94,36 +105,36 @@ export default function StockDetail({ symbol }: { symbol: string }) {
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
           <div>
-            <div className="text-xs text-neutral-600 mb-1">Open</div>
-            <div className="text-sm font-medium">{formatCurrency(open)}</div>
+            <div className="text-xs text-amber-300/70 mb-1">Open</div>
+            <div className="text-sm font-medium text-amber-200">{formatCurrency(open)}</div>
           </div>
           <div>
-            <div className="text-xs text-neutral-600 mb-1">High</div>
-            <div className="text-sm font-medium">{formatCurrency(high)}</div>
+            <div className="text-xs text-amber-300/70 mb-1">High</div>
+            <div className="text-sm font-medium text-amber-200">{formatCurrency(high)}</div>
           </div>
           <div>
-            <div className="text-xs text-neutral-600 mb-1">Low</div>
-            <div className="text-sm font-medium">{formatCurrency(low)}</div>
+            <div className="text-xs text-amber-300/70 mb-1">Low</div>
+            <div className="text-sm font-medium text-amber-200">{formatCurrency(low)}</div>
           </div>
           <div>
-            <div className="text-xs text-neutral-600 mb-1">Volume</div>
-            <div className="text-sm font-medium">{formatNumber(volume)}</div>
+            <div className="text-xs text-amber-300/70 mb-1">Volume</div>
+            <div className="text-sm font-medium text-amber-200">{formatNumber(volume)}</div>
           </div>
           <div>
-            <div className="text-xs text-neutral-600 mb-1">52-Week High</div>
-            <div className="text-sm font-medium">{yearHigh === high ? "N/A" : formatCurrency(yearHigh)}</div>
+            <div className="text-xs text-amber-300/70 mb-1">52-Week High</div>
+            <div className="text-sm font-medium text-amber-200">{yearHigh === high ? "N/A" : formatCurrency(yearHigh)}</div>
           </div>
           <div>
-            <div className="text-xs text-neutral-600 mb-1">52-Week Low</div>
-            <div className="text-sm font-medium">{yearLow === low ? "N/A" : formatCurrency(yearLow)}</div>
+            <div className="text-xs text-amber-300/70 mb-1">52-Week Low</div>
+            <div className="text-sm font-medium text-amber-200">{yearLow === low ? "N/A" : formatCurrency(yearLow)}</div>
           </div>
           <div>
-            <div className="text-xs text-neutral-600 mb-1">Market Cap</div>
-            <div className="text-sm font-medium">{marketCap}</div>
+            <div className="text-xs text-amber-300/70 mb-1">Market Cap</div>
+            <div className="text-sm font-medium text-amber-200">{marketCap}</div>
           </div>
           <div>
-            <div className="text-xs text-neutral-600 mb-1">P/E Ratio</div>
-            <div className="text-sm font-medium">{peRatio}</div>
+            <div className="text-xs text-amber-300/70 mb-1">P/E Ratio</div>
+            <div className="text-sm font-medium text-amber-200">{peRatio}</div>
           </div>
         </div>
       </CardContent>
@@ -133,38 +144,38 @@ export default function StockDetail({ symbol }: { symbol: string }) {
 
 function StockDetailLoading() {
   return (
-    <Card className="border border-neutral-200 mb-6">
+    <Card className="card mb-6">
       <CardContent className="p-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
           <div className="flex items-center mb-2 sm:mb-0">
             <div className="mr-3">
-              <Skeleton className="h-6 w-16 mb-1" />
-              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-6 w-16 mb-1 bg-amber-800/30" />
+              <Skeleton className="h-4 w-24 bg-amber-800/30" />
             </div>
-            <Skeleton className="h-6 w-12" />
+            <Skeleton className="h-6 w-12 bg-amber-800/30" />
           </div>
           
           <div className="flex items-baseline">
-            <Skeleton className="h-6 w-20 mr-2" />
-            <Skeleton className="h-4 w-16" />
+            <Skeleton className="h-6 w-20 mr-2 bg-amber-800/30" />
+            <Skeleton className="h-4 w-16 bg-amber-800/30" />
           </div>
         </div>
         
         <div className="mb-4">
           <div className="flex space-x-2 pb-2">
             {[...Array(7)].map((_, i) => (
-              <Skeleton key={i} className="h-8 w-10" />
+              <Skeleton key={i} className="h-8 w-10 bg-amber-800/30" />
             ))}
           </div>
         </div>
         
-        <Skeleton className="h-[300px] w-full mb-4" />
+        <Skeleton className="h-[300px] w-full mb-4 bg-amber-800/30" />
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[...Array(8)].map((_, i) => (
             <div key={i}>
-              <Skeleton className="h-3 w-16 mb-1" />
-              <Skeleton className="h-5 w-20" />
+              <Skeleton className="h-3 w-16 mb-1 bg-amber-800/30" />
+              <Skeleton className="h-5 w-20 bg-amber-800/30" />
             </div>
           ))}
         </div>

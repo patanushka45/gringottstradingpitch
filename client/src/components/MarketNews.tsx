@@ -30,15 +30,23 @@ export default function MarketNews() {
     return <MarketNewsLoading />;
   }
 
-  if (error || !data || !data.feed) {
+  if (error || !data || !data.feed || data.Information) {
     return (
-      <Card className="border border-neutral-200">
+      <Card className="card">
         <CardHeader>
-          <CardTitle>Market News</CardTitle>
+          <CardTitle className="text-amber-300">Wizarding Market News</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center p-4">
-            <p className="text-neutral-600">Could not load market news</p>
+            {data && data.Information ? (
+              <div>
+                <p className="text-amber-200 mb-3">Using Demo API Key</p>
+                <p className="text-amber-300/60 text-sm italic">{data.Information}</p>
+                <p className="text-amber-300/70 mt-4">Get a free API key from <a href="https://www.alphavantage.co/support/#api-key" target="_blank" rel="noopener" className="underline text-amber-400 hover:text-amber-300">Alpha Vantage</a></p>
+              </div>
+            ) : (
+              <p className="text-amber-300/70">Could not load market news</p>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -71,15 +79,15 @@ export default function MarketNews() {
   };
 
   return (
-    <Card className="border border-neutral-200">
+    <Card className="card">
       <CardHeader>
-        <CardTitle>Market News</CardTitle>
+        <CardTitle className="text-amber-300">Wizarding Market News</CardTitle>
       </CardHeader>
       <CardContent>
         {newsItems.map((news: NewsItem, index: number) => (
           <div 
             key={index} 
-            className={`pb-4 mb-4 ${index < newsItems.length - 1 ? 'border-b border-neutral-200' : ''}`}
+            className={`pb-4 mb-4 ${index < newsItems.length - 1 ? 'border-b border-amber-900/30' : ''}`}
           >
             <div className="flex items-start">
               <div className="flex-grow">
@@ -88,24 +96,24 @@ export default function MarketNews() {
                     href={news.url} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="hover:text-primary"
+                    className="text-amber-200 hover:text-amber-300"
                   >
                     {news.title}
                   </a>
                 </h3>
-                <div className="flex text-xs text-neutral-600 mb-2">
+                <div className="flex text-xs text-amber-400/60 mb-2">
                   <span>{news.source}</span>
                   <span className="mx-1">•</span>
                   <span>{formatTimeAgo(news.time_published)}</span>
                 </div>
-                <p className="text-sm text-neutral-700">
+                <p className="text-sm text-amber-300/70">
                   {news.summary.length > 150 
                     ? `${news.summary.substring(0, 150)}...` 
                     : news.summary}
                 </p>
               </div>
               {news.banner_image && (
-                <div className="ml-4 flex-shrink-0 h-16 w-16 rounded-md overflow-hidden bg-neutral-100">
+                <div className="ml-4 flex-shrink-0 h-16 w-16 rounded-md overflow-hidden bg-amber-900/20 border border-amber-800/30">
                   <img 
                     src={news.banner_image} 
                     alt={news.title} 
@@ -122,8 +130,8 @@ export default function MarketNews() {
         ))}
         
         <div className="text-center mt-4">
-          <Button variant="link" className="text-sm text-primary font-medium">
-            View More News
+          <Button variant="link" className="text-sm text-amber-400 hover:text-amber-300 font-medium">
+            View More Prophetic News
           </Button>
         </div>
       </CardContent>
@@ -133,36 +141,36 @@ export default function MarketNews() {
 
 function MarketNewsLoading() {
   return (
-    <Card className="border border-neutral-200">
+    <Card className="card">
       <CardHeader>
-        <CardTitle>Market News</CardTitle>
+        <CardTitle className="text-amber-300">Wizarding Market News</CardTitle>
       </CardHeader>
       <CardContent>
         {[...Array(3)].map((_, i) => (
           <div 
             key={i} 
-            className={`pb-4 mb-4 ${i < 2 ? 'border-b border-neutral-200' : ''}`}
+            className={`pb-4 mb-4 ${i < 2 ? 'border-b border-amber-900/30' : ''}`}
           >
             <div className="flex items-start">
               <div className="flex-grow">
-                <Skeleton className="h-5 w-full mb-2" />
+                <Skeleton className="h-5 w-full mb-2 bg-amber-800/30" />
                 <div className="flex mb-2">
-                  <Skeleton className="h-3 w-16 mr-2" />
-                  <Skeleton className="h-3 w-24" />
+                  <Skeleton className="h-3 w-16 mr-2 bg-amber-800/30" />
+                  <Skeleton className="h-3 w-24 bg-amber-800/30" />
                 </div>
-                <Skeleton className="h-4 w-full mb-1" />
-                <Skeleton className="h-4 w-4/5" />
+                <Skeleton className="h-4 w-full mb-1 bg-amber-800/30" />
+                <Skeleton className="h-4 w-4/5 bg-amber-800/30" />
               </div>
               <div className="ml-4 flex-shrink-0">
-                <Skeleton className="h-16 w-16 rounded-md" />
+                <Skeleton className="h-16 w-16 rounded-md bg-amber-800/30" />
               </div>
             </div>
           </div>
         ))}
         
         <div className="text-center mt-4">
-          <Button variant="link" className="text-sm text-primary font-medium" disabled>
-            View More News
+          <Button variant="link" className="text-sm text-amber-400/50 font-medium" disabled>
+            View More Prophetic News
           </Button>
         </div>
       </CardContent>
