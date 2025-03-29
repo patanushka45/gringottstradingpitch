@@ -6,8 +6,26 @@ import { insertPortfolioStockSchema, insertWatchlistStockSchema } from "@shared/
 import { z } from "zod";
 
 // Using the API key directly from the .env file
-const ALPHA_VANTAGE_API_KEY = "DRM5WG5DOP4WNTRS";
+const ALPHA_VANTAGE_API_KEY = " VAMP7GB5J7FMOSMV";
 console.log("API Key being used: custom key");
+
+// Add a simple rate limiter to avoid Alpha Vantage API limits (5 calls per minute)
+let lastApiCallTime = 0;
+const MIN_TIME_BETWEEN_CALLS_MS = 1000; // 1 second minimum between calls
+
+async function alphavantageApiCall(url: string) {
+  const now = Date.now();
+  const timeSinceLastCall = now - lastApiCallTime;
+  
+  // If we've made a request very recently, add a small delay
+  if (timeSinceLastCall < MIN_TIME_BETWEEN_CALLS_MS) {
+    const delay = MIN_TIME_BETWEEN_CALLS_MS - timeSinceLastCall;
+    await new Promise(resolve => setTimeout(resolve, delay));
+  }
+  
+  lastApiCallTime = Date.now();
+  return axios.get(url);
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // API routes prefix
@@ -31,7 +49,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Query parameter q is required" });
       }
 
-      const response = await axios.get(
+      const response = await alphavantageApiCall(
         `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${query}&apikey=${ALPHA_VANTAGE_API_KEY}`
       );
       res.json(response.data);
@@ -45,7 +63,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { symbol } = req.params;
       
-      const response = await axios.get(
+      const response = await alphavantageApiCall(
         `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY}`
       );
       
@@ -65,7 +83,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { symbol } = req.params;
       const interval = req.query.interval || "5min";
       
-      const response = await axios.get(
+      const response = await alphavantageApiCall(
         `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=${interval}&apikey=${ALPHA_VANTAGE_API_KEY}`
       );
       
@@ -84,7 +102,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { symbol } = req.params;
       
-      const response = await axios.get(
+      const response = await alphavantageApiCall(
         `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY}`
       );
       
@@ -103,7 +121,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { symbol } = req.params;
       
-      const response = await axios.get(
+      const response = await alphavantageApiCall(
         `https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY}`
       );
       
@@ -122,7 +140,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { symbol } = req.params;
       
-      const response = await axios.get(
+      const response = await alphavantageApiCall(
         `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY}`
       );
       
@@ -229,7 +247,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Market news endpoint
   app.get(`${apiPrefix}/market/news`, async (req, res) => {
     try {
-      const response = await axios.get(
+      const response = await alphavantageApiCall(
         `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&apikey=${ALPHA_VANTAGE_API_KEY}`
       );
       

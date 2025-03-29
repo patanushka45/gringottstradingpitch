@@ -40,9 +40,26 @@ export default function MarketNews() {
           <div className="text-center p-4">
             {data && data.Information ? (
               <div>
-                <p className="text-amber-200 mb-3">Using Demo API Key</p>
-                <p className="text-amber-300/60 text-sm italic">{data.Information}</p>
-                <p className="text-amber-300/70 mt-4">Get a free API key from <a href="https://www.alphavantage.co/support/#api-key" target="_blank" rel="noopener" className="underline text-amber-400 hover:text-amber-300">Alpha Vantage</a></p>
+                {data.Information.includes("demo") ? (
+                  <>
+                    <h3 className="text-amber-200 text-lg mb-2">Demo API Key in Use</h3>
+                    <p className="text-amber-300/60 text-sm italic mb-3">{data.Information}</p>
+                    <p className="text-amber-300/70 mt-4">Get a free API key from <a href="https://www.alphavantage.co/support/#api-key" target="_blank" rel="noopener" className="underline text-amber-400 hover:text-amber-300">Alpha Vantage</a></p>
+                  </>
+                ) : data.Information.includes("detected") ? (
+                  <>
+                    <h3 className="text-amber-200 text-lg mb-2">API Rate Limit Reached</h3>
+                    <p className="text-amber-300/60 text-sm italic mb-3">{data.Information}</p>
+                    <p className="text-amber-300/70 mb-1">Alpha Vantage limits API requests to 5 calls per minute and 500 calls per day</p>
+                    <p className="text-amber-300/70 mt-2">Try refreshing the page in a minute or two</p>
+                  </>
+                ) : (
+                  <>
+                    <h3 className="text-amber-200 text-lg mb-2">API Error</h3>
+                    <p className="text-amber-300/60 text-sm italic mb-3">{data.Information}</p>
+                    <p className="text-amber-300/70 mb-1">Unable to load market news</p>
+                  </>
+                )}
               </div>
             ) : (
               <p className="text-amber-300/70">Could not load market news</p>
