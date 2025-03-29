@@ -60,7 +60,7 @@ export default function StockChart({ symbol, timeframe }: StockChartProps) {
       
       // Find the time series key in the response
       if (endpoint === "intraday") {
-        timeSeriesKey = `Time Series (${interval})`;
+        timeSeriesKey = `Time Series (5min)`; // Fixed to always use 5min key for intraday
       } else if (endpoint === "daily") {
         timeSeriesKey = "Time Series (Daily)";
       } else if (endpoint === "weekly") {
@@ -71,7 +71,7 @@ export default function StockChart({ symbol, timeframe }: StockChartProps) {
       
       const timeSeries = data[timeSeriesKey];
       
-      if (timeSeries) {
+      if (timeSeries && Object.keys(timeSeries).length > 0) {
         // Convert the time series object to an array for Recharts
         let chartPoints = Object.entries(timeSeries).map(([date, values]: [string, any]) => ({
           date,
@@ -108,10 +108,17 @@ export default function StockChart({ symbol, timeframe }: StockChartProps) {
           chartPoints = chartPoints.filter(point => new Date(point.date) >= fiveYearsAgo);
         }
         
-        // Sort by date (ascending)
-        chartPoints.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-        
-        setChartData(chartPoints);
+        // Make sure we have data points
+        if (chartPoints.length > 0) {
+          // Sort by date (ascending)
+          chartPoints.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+          setChartData(chartPoints);
+        } else {
+          setChartData([]); // Empty array if no data points match filter
+        }
+      } else {
+        // No data available for this timeframe
+        setChartData([]);
       }
     }
   }, [data, endpoint, interval, timeframe]);
@@ -142,7 +149,7 @@ export default function StockChart({ symbol, timeframe }: StockChartProps) {
     } else {
       // For yearly and max, show month and year
       const d = new Date(date);
-      return `${d.getMonth() + 1}/${d.getFullYear().toString().substr(2, 2)}`;
+      return `${d.getMonth() + 1}/${d.getFullYear().toString().substring(2, 2)}`;
     }
   };
 
@@ -158,7 +165,7 @@ export default function StockChart({ symbol, timeframe }: StockChartProps) {
               <p>Open: ${payload[0].payload.open.toFixed(2)}</p>
               <p>High: ${payload[0].payload.high.toFixed(2)}</p>
               <p>Low: ${payload[0].payload.low.toFixed(2)}</p>
-              <p>Volume: {payload[0].payload.volume.toLocaleString()}</p>
+              <p>Volume: {Number(payload[0].payload.volume).toLocaleString()}</p>
             </>
           )}
         </div>
