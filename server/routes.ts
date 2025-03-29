@@ -5,7 +5,9 @@ import axios from "axios";
 import { insertPortfolioStockSchema, insertWatchlistStockSchema } from "@shared/schema";
 import { z } from "zod";
 
-const ALPHA_VANTAGE_API_KEY = process.env.ALPHA_VANTAGE_API_KEY || "demo";
+// Using the API key directly from the .env file
+const ALPHA_VANTAGE_API_KEY = "DRM5WG5DOP4WNTRS";
+console.log("API Key being used: custom key");
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // API routes prefix
