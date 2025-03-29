@@ -635,6 +635,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(defaultNews);
     }
   });
+  
+  // Fantasy Team Tokens endpoint
+  app.get(`${apiPrefix}/fantasy-tokens`, (req, res) => {
+    // This would be connected to a blockchain or smart contract in a real implementation
+    const fantasyTokens = [
+      {
+        id: "ft-001",
+        name: "Wizard Apple",
+        symbol: "WZAPL",
+        price: 178.72,
+        change24h: 2.3,
+        marketCap: 2750000,
+        owner: "0x7a2d...3e8f",
+        baseStock: "AAPL",
+        contractAddress: "0x7a2dbc8e3f8f9a2d3e8f"
+      },
+      {
+        id: "ft-002",
+        name: "Magical Microsoft",
+        symbol: "MGMSFT",
+        price: 412.35,
+        change24h: -0.8,
+        marketCap: 1950000,
+        owner: "0x8b3c...9d7a",
+        baseStock: "MSFT",
+        contractAddress: "0x8b3c45d67890a9b9c9d7a"
+      },
+      {
+        id: "ft-003",
+        name: "Spellbound Tesla",
+        symbol: "SBTSL",
+        price: 172.63,
+        change24h: 4.2,
+        marketCap: 985000,
+        owner: "0x3f6d...2c1e",
+        baseStock: "TSLA",
+        contractAddress: "0x3f6defab123456789a2c1e"
+      }
+    ];
+    
+    res.json(fantasyTokens);
+  });
+  
+  app.post(`${apiPrefix}/fantasy-tokens`, (req, res) => {
+    // In a real implementation, this would deploy a smart contract
+    const newToken = {
+      id: `ft-${Date.now().toString().substring(7)}`,
+      name: req.body.name || "New Fantasy Token",
+      symbol: req.body.symbol || "NFT",
+      price: req.body.basePrice || 100,
+      change24h: 0,
+      marketCap: req.body.initialSupply * (req.body.basePrice || 100) || 500000,
+      owner: req.body.ownerAddress || "0x123...abc",
+      baseStock: req.body.baseStock || "CUSTOM",
+      contractAddress: `0x${Math.random().toString(16).substring(2, 10)}...${Math.random().toString(16).substring(2, 6)}`
+    };
+    
+    res.status(201).json(newToken);
+  });
 
   // Create HTTP server
   const httpServer = createServer(app);
